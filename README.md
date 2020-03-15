@@ -4,7 +4,7 @@ This repository contains a Docker-based Nextcloud setup with LetsEncrypt SSL, Po
 
 ##  Credits
 
-The configuration is based on the [official full example](https://github.com/nextcloud/docker/blob/ac8c9984319e45fd34fa3863f82fd9063d628aa4/.examples/dockerfiles/full/apache/Dockerfile) and [bentolor's setup](https://github.com/bentolor/docker-nextcloud-collabora-postgresql-letsencrypt) as well as [Gerald Allerstorfer's](https://www.allerstorfer.at/nextcloud-install-preview-generator/) guide for enabling preview generation.
+The configuration is based on [this official full example](https://github.com/nextcloud/docker/blob/ac8c9984319e45fd34fa3863f82fd9063d628aa4/.examples/dockerfiles/full/apache/Dockerfile), [bentolor's setup](https://github.com/bentolor/docker-nextcloud-collabora-postgresql-letsencrypt) as well as [Gerald Allerstorfer's](https://www.allerstorfer.at/nextcloud-install-preview-generator/) guide for enabling preview generation.
 
 ### Difference
 
@@ -46,7 +46,7 @@ In this command (and the ones that follow!), `nextcloud_app_1` is the name of th
 
 ### Enable Collabora
 
-To enable Collabora, log in to your Nextcloud using the admin credentials specified in your `docker-compose.yml` and
+To enable Collabora, log in to your Nextcloud using the admin credentials specified in your `docker-compose.yml` file and
 
 - install the Collabora plugin from the Nextcloud app store:
   - Apps -> Download and enable "Collabora Online".
@@ -55,7 +55,7 @@ To enable Collabora, log in to your Nextcloud using the admin credentials specif
 
 ### Enable Preview Generation
 
-To get preview generation to work install the Preview Generator from the Nextcloud app and add the following to your `config.php`
+To get preview generation to work, install the Preview Generator from the Nextcloud app and add the following to your `config.php`
 
 ``` 
 'preview_libreoffice_path' => '/usr/bin/libreoffice',
@@ -82,7 +82,7 @@ To get preview generation to work install the Preview Generator from the Nextclo
  ),
 ```
 
-One way to do this is by accessing `config.php` from your host machine (note that the name of your Docker volume might be slightly different):
+One way to do this, is by accessing `config.php` from your host machine (note that the name of your Docker volume might be slightly different):
 
 ``` bash
 sudo nano /var/lib/docker/volumes/nextcloud_nextcloud-data/_data/config/config.php
@@ -101,7 +101,7 @@ Finally, we will add a cron job that generates previews for new or modified file
 docker exec -u www-data nextcloud_app_1 php occ preview:pre-generate
 ```
 
-To run this script (say `~/nextcloud/pre-generate.sh`) every 10 minutes, execute `crontab -e` and add the following to the current crontab:
+To run this script (`~/nextcloud/pre-generate.sh`) every 10 minutes, execute `crontab -e` and add the following to the current crontab:
 
 ``` bash
 */10 * * * * ~/nextcloud/pre-generate.sh
@@ -123,4 +123,4 @@ $ sudo docker-compose build --pull
 $ sudo docker-compose up -d
 ```
 
-Although I haven't had the need to do this yet, it may be necessary it may be necessary to execute `sudo docker-compose exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
+Although I haven't had the need to do this yet, it may be necessary to execute `sudo docker-compose exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
