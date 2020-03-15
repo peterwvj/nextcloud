@@ -1,0 +1,103 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - nextcloud-db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+
+  app:
+    build: ./nextcloud
+    restart: always
+    volumes:
+      - nextcloud-data:/var/www/html
+      - /mnt/md0/nc-data:/var/www/html/data
+    environment:
+      - VIRTUAL_HOST=[[##nextcloud.your-domain.org##]]
+      - LETSENCRYPT_HOST=[[##nextcloud.your-domain.org##]]
+      - LETSENCRYPT_EMAIL=[[##reachable email address##]]
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=nextcloud
+      - NEXTCLOUD_OVERWRITEPROTOCOL=https
+      - NEXTCLOUD_ADMIN_USER=[[##username##]]
+      - NEXTCLOUD_ADMIN_PASSWORD=[[##password##]]
+      - NEXTCLOUD_TRUSTED_DOMAINS=[[##nextcloud.your-domain.org##]]
+      #- SMTP_HOST=
+      #- SMTP_SECURE=tls
+      #- SMTP_PORT=587
+      #- SMTP_NAME=xxx
+      #- SMTP_PASSWORD=xxx
+      #- MAIL_FROM_ADDRESS=xxx
+      #- MAIL_DOMAIN=xxx
+    env_file:
+      - db.env
+    depends_on:
+      - db
+    networks:
+      - nextcloud-proxy-tier
+      - default
+
+  proxy:
+    build: ./proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - nextcloud-proxy-certs:/etc/nginx/certs:ro
+      - nextcloud-proxy-vhost.d:/etc/nginx/vhost.d
+      - nextcloud-proxy-html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - nextcloud-proxy-tier
+
+  letsencrypt-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes:
+      - nextcloud-proxy-certs:/etc/nginx/certs
+      - nextcloud-proxy-vhost.d:/etc/nginx/vhost.d
+      - nextcloud-proxy-html:/usr/share/nginx/html
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - nextcloud-proxy-tier
+    depends_on:
+      - proxy
+
+  collabora:
+    image: collabora/code
+    restart: always
+    networks:
+      - nextcloud-proxy-tier
+    depends_on:
+      - proxy
+    cap_add:
+     - MKNOD
+    ports:
+      - 127.0.0.1:9980:9980
+    environment:
+      # IMPORTANT: Note the backslash before each dot (only here)!
+      - domain=[[##nextcloud\.your-domain\.org##]]
+      - username=admin
+      - password=[[##password##]]
+      - VIRTUAL_HOST=[[##collabora.your-domain.org##]]
+      - VIRTUAL_NETWORK=nextcloud-proxy-tier
+      - VIRTUAL_PORT=9980
+      - extra_params=--o:ssl.enable=false --o:ssl.termination=true
+      - LETSENCRYPT_HOST==[[##collabora.your-domain.org##]]
+
+volumes:
+  nextcloud-db:
+  nextcloud-data:
+  nextcloud-proxy-certs:
+  nextcloud-proxy-vhost.d:
+  nextcloud-proxy-html:
+
+networks:
+  nextcloud-proxy-tier:
