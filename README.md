@@ -123,4 +123,4 @@ $ sudo docker-compose build --pull
 $ sudo docker-compose up -d
 ```
 
-Although I haven't had the need to do this yet, it may be necessary to execute `sudo docker-compose exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
+Although I haven't had the need to do this yet, it may be necessary to execute `sudo docker exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
