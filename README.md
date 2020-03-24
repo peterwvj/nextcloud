@@ -33,7 +33,7 @@ $ sudo mkdir /mnt/md0/nc-data && \
 Next, build and run the containers:
 
 ```bash
-$ sudo docker-compose up -d --build
+$ docker-compose up -d --build
 ```
 
 Once your Nextcloud instance is up running  (confirm this by accessing your Nextcloud domain), you'll need to execute the following command to make your Nextcloud instance work with the Android app or other desktop clients (such as the one available for Ubuntu).
@@ -118,9 +118,9 @@ You may want to set up SMTP to enable email notifications. Although this can par
 To upgrade your installation, execute the following commands.
 
 ```bash
-$ sudo docker-compose downs
-$ sudo docker-compose build --pull
-$ sudo docker-compose up -d
+$ docker-compose downs
+$ docker-compose build --pull
+$ docker-compose up -d
 ```
 
-Although I haven't had the need to do this yet, it may be necessary to execute `sudo docker exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
+Although I haven't had the need to do this yet, it may be necessary to execute `docker exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
