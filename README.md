@@ -39,7 +39,7 @@ $ docker-compose up -d --build
 Once your Nextcloud instance is up running  (confirm this by accessing your Nextcloud domain), you'll need to execute the following command to make your Nextcloud instance work with the Android app or other desktop clients (such as the one available for Ubuntu).
 
 ``` bash
-docker exec -u www-data nextcloud_app_1 php occ config:system:set overwriteprotocol --value="https"
+$ docker exec -u www-data nextcloud_app_1 php occ config:system:set overwriteprotocol --value="https"
 ```
 
 In this command (and the ones that follow!), `nextcloud_app_1` is the name of the Nextcloud container. As pointed out in bentolor's example, executing this command is necessary until [this pull request](https://github.com/nextcloud/docker/pull/819) has been merged. The issue is described in more detail [here](https://github.com/nextcloud/android/issues/4786).
@@ -85,13 +85,13 @@ To get preview generation to work, install the Preview Generator from the Nextcl
 One way to do this, is by accessing `config.php` from your host machine (note that the name of your Docker volume might be slightly different):
 
 ``` bash
-sudo nano /var/lib/docker/volumes/nextcloud_nextcloud-data/_data/config/config.php
+$ sudo nano /var/lib/docker/volumes/nextcloud_nextcloud-data/_data/config/config.php
 ```
 
 Next, generate previews for all files:
 
 ``` bash
-docker exec -u www-data nextcloud_app_1 php occ preview:generate-all
+$ docker exec -u www-data nextcloud_app_1 php occ preview:generate-all
 ```
 
 Finally, we will add a cron job that generates previews for new or modified files. One way to do this is by creating a shell script that performs this task:
@@ -118,7 +118,7 @@ You may want to set up SMTP to enable email notifications. Although this can par
 To upgrade your installation, execute the following commands.
 
 ```bash
-$ docker-compose downs
+$ docker-compose down
 $ docker-compose build --pull
 $ docker-compose up -d
 ```
