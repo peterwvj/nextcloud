@@ -124,3 +124,36 @@ $ docker-compose up -d
 ```
 
 Although I haven't had the need to do this yet, it may be necessary to execute `docker exec --user www-data nextcloud_app_1 php occ db:add-missing-indices` after a major release upgrade (as pointed out by bentolor).
+
+## Migrate PostgreSQL data
+
+The example below shows how I used tianon's Docker image to upgrade my PostgreSQL data from version 12 to 13. The `_data` folder, referred to in the example, contains the PostgreSQL data being migrated. In my case the `_data` folder is contained in `/var/lib/docker/volumes/nextcloud_nextcloud-db/`.
+
+Before you try this make sure you backup your PostgreSQL data.
+
+First, prepare your data for migration.
+
+```bash
+$ mkdir -p /migrate/12
+$ mkdir -p /migrate/13
+$ cp -rp _data /migrate/12/data
+$ cd migrate
+```
+Next, perform the migration (note that your paths may differ).
+
+```bash
+$ docker run --rm -e PGUSER=nextcloud -e POSTGRES_INITDB_ARGS="-U nextcloud" -v /var/lib/docker/volumes/nextcloud_nextcloud-db/migrate/:/var/lib/postgresql tianon/postgres-upgrade:12-to-13
+```
+
+After that copy over your client authentication configuration to the new data:
+
+```bash
+cp -rp 12/data/pg_hba.conf 13/data/pg_hba.conf
+```
+
+Finally replace your old data with the new data:
+
+```bash
+$ rm -rf /var/lib/docker/volumes/nextcloud_nextcloud-db/_data
+$ cp -rp 13/data /var/lib/docker/volumes/nextcloud_nextcloud-db/_data
+```
