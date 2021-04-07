@@ -46,8 +46,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     volumes:
       - nextcloud-proxy-certs:/etc/nginx/certs:ro
       - nextcloud-proxy-vhost.d:/etc/nginx/vhost.d
@@ -56,8 +54,8 @@ services:
     networks:
       - nextcloud-proxy-tier
 
-  letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+  acme-companion:
+    image: nginxproxy/acme-companion
     restart: always
     volumes:
       - nextcloud-proxy-certs:/etc/nginx/certs
