@@ -8,7 +8,7 @@ The configuration is based on [this official full example](https://github.com/ne
 
 ### Difference
 
-My setup differs from bentolor's setup by using a slightly modified version of the official full example. In particular, I've modified this example to install the `libreoffice` and `ghostscript` packages in order to make preview generation work for LibreOffice documents and PDF files, respectively.
+My setup differs from bentolor's setup by using a slightly modified version of the official full example. In particular, I've modified this example to install the `libreoffice` and `ghostscript` packages in order to make preview generation work for LibreOffice documents and PDF files, respectively. Finally, I also use `nginxproxy/acme-companion` for SSL certificate generation.
 
 ## Prerequisites
 
