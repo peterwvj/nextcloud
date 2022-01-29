@@ -134,9 +134,10 @@ Before you try this make sure you backup your PostgreSQL data.
 First, prepare your data for migration.
 
 ```bash
-$ mkdir -p /migrate/12
-$ mkdir -p /migrate/13
-$ cp -rp _data /migrate/12/data
+$ cd /var/lib/docker/volumes/nextcloud_nextcloud-db/
+$ mkdir -p migrate/12
+$ mkdir -p migrate/13
+$ cp -rp _data migrate/12/data
 $ cd migrate
 ```
 Next, perform the migration (note that your paths may differ).
